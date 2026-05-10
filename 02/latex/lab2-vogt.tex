@@ -44,7 +44,7 @@ May 2026
 
 
 \section*{Introduction}
-Noise can occur in operational amplifiers (op amps) due to various effects of their internal components.
+Noise can occur in operational amplifiers (op amps; OPA) due to various effects of their internal components.
 This noise is generally dependent on the frequency of operation.
 The goal of this experiment is to measure the voltage spot noise density of a Burr-Brown OPA37 op amp
 which corresponds to the amount of noise present at a specific frequency.
@@ -70,10 +70,10 @@ The input of the circuit is fed by a signal generator and the output is measured
 
 
 
-\section{Experiment}
-First, the gain of the circuit is measured by measuring both the
+\section{Gain Measurement}
+First, the gain of the circuit is measured by comparing the
 input signal from the signal generator and the amplified output on the oscilloscope.
-
+Two measurements are shown in \figref{fig:gain-measurement}.
 \begin{figure}[h]
   \centering
   \begin{minipage}{.5\textwidth}
@@ -90,10 +90,39 @@ input signal from the signal generator and the amplified output on the oscillosc
   \label{fig:gain-measurement}
 \end{figure}
 
+Due to the high gain of the op amp circuit, the input has a low amplitude and thus a
+low signal-to-noise ratio.
+To avoid exaggerating the measured peak-to-peak amplitude of the input due to noise,
+the average of multiple waveforms is taken. The measured amplitudes still vary over time.
+To calculate the measured gain, the mean values of the amplitudes of the two
+measurements in \figref{fig:gain-measurement} are used:
 \begin{equation*}
-  G = \frac{\overline{U}_\text{out,\,pp}}{\overline{U}_\text{in,\,pp}} = \frac{\SI{5.72}{\V} + \SI{5.64}{\V}}{\SI{5.404}{\mV} + \SI{5.368}{\mV} \approx 1058}
+  G = \frac{\overline{U}_\text{out,\,pp}}{\overline{U}_\text{in,\,pp}} = \frac{\SI{5.72}{\V} + \SI{5.64}{\V}}{\SI{5.404}{\mV} + \SI{5.368}{\mV}} \approx 1058
 \end{equation*}
+This value is about \SI{6}{\percent} larger than the value of $1001$ calculated from the resistor values.
+This is likely due to imprecision of the actual resistance values.
 
+
+
+\section{Voltage Spot Noise Measurement}
+The main task of the experiment is to measure the voltage spot noise
+at a frequency of \SI{1}{\kHz} and calculate the op amp's input noise voltage $E_\text{NI}$ from it.
+To do this, the waveform generator is turned of and the op amp circuit's input connected to ground.
+The output is again measured on the oscilloscope, which can be configured to calculate the fast fourier transform (FFT)
+of the waveform. The result is shown in \figref{fig:noise-opa}, with a cursor marking the noise at \SI{1}{\kHz}.
+\begin{figure}
+  \centering
+  \includegraphics[width=.6\textwidth]{noise-opa2}
+  \caption{FFT of the op amp circuit's output, with the input connected to ground.}
+  \label{fig:noise-opa}
+\end{figure}
+This value is $U_\text{tot}$, the combination of the noise $U_\text{OPA}$
+on the output of the op amp circuit and the noise $U_\text{scope}$ due to the
+oscilloscope measuring and digitizing the signal. These are two independent noise sources so
+their values add quadratically:
+\begin{equation}
+  U_\text{tot} = \sqrt{U_\text{OPA}^2 + U_\text{scope}^2}
+\end{equation}
 
 
 \clearpage
