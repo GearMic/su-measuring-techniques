@@ -11,7 +11,7 @@
 % \usepackage{xspace}
 \usepackage{csquotes}
 \usepackage{hyperref}
-\usepackage[disable]{todonotes}
+\usepackage{todonotes} % [disable]
 \usepackage{amsmath}
 \usepackage{siunitx}
 \usepackage{amssymb}
@@ -53,7 +53,7 @@ which corresponds to the amount of noise present at a specific frequency.
 
 
 
-\section{Setup}
+\section{Setup}\label{setup}
 The op amp is set up in a non-inverting amplifier circuit, see \figref{fig:opa-circuit}.
 \begin{figure}[h]
   \centering
@@ -97,9 +97,9 @@ the average of multiple waveforms is taken. The measured amplitudes still vary o
 To calculate the measured gain, the mean values of the amplitudes of the two
 measurements in \figref{fig:gain-measurement} are used:
 \begin{equation*}
-  G = \frac{\overline{U}_\text{out,\,pp}}{\overline{U}_\text{in,\,pp}} = \frac{\SI{5.72}{\V} + \SI{5.64}{\V}}{\SI{5.404}{\mV} + \SI{5.368}{\mV}} \approx 1058
+  G_\text{exp} = \frac{\overline{U}_\text{out,\,pp}}{\overline{U}_\text{in,\,pp}} = \frac{\SI{5.72}{\V} + \SI{5.64}{\V}}{\SI{5.404}{\mV} + \SI{5.368}{\mV}} \approx 1058
 \end{equation*}
-This value is about \SI{6}{\percent} larger than the value of $1001$ calculated from the resistor values.
+The experimantal value is about \SI{6}{\percent} larger than the value of $1001$ calculated from the resistor values.
 This is likely due to imprecision of the actual resistance values.
 
 
@@ -109,8 +109,21 @@ The main task of the experiment is to measure the voltage spot noise
 at a frequency of \SI{1}{\kHz} and calculate the op amp's input noise voltage $E_\text{NI}$ from it.
 To do this, the waveform generator is turned of and the op amp circuit's input connected to ground.
 The output is again measured on the oscilloscope, which can be configured to calculate the fast fourier transform (FFT)
-of the waveform. The result is shown in \figref{fig:noise-opa}, with a cursor marking the noise at \SI{1}{\kHz}.
+of the waveform. Various parameters for this can be adjusted and the final values we settled on can be seen in
+\figref{fig:fourier-params}.
 \begin{figure}
+  \centering
+  \includegraphics[width=.5\textwidth]{noise-opa3.jpg}
+  \caption{Parameters of the FFT performed by the oscilloscope.}
+  \label{fig:fourier-params}
+\end{figure}
+For following calculations, the duration \SI{400}{\ms} of the sampled waveform and the resulting bandwidth
+per bin $\Delta f = \SI{5}{\kHz}$ are most important.
+
+Again, an averaging over time is performed to filter out any temporary effects.
+The resulting time-averaged FFT is shown in \figref{fig:noise-opa}, with a cursor marking the noise at \SI{1}{\kHz}.
+The oscilloscope shows the corresponding voltage value as \textit{V1}
+\begin{figure}[h]
   \centering
   \includegraphics[width=.6\textwidth]{noise-opa2}
   \caption{FFT of the op amp circuit's output, with the input connected to ground.}
@@ -121,8 +134,51 @@ on the output of the op amp circuit and the noise $U_\text{scope}$ due to the
 oscilloscope measuring and digitizing the signal. These are two independent noise sources so
 their values add quadratically:
 \begin{equation}
-  U_\text{tot} = \sqrt{U_\text{OPA}^2 + U_\text{scope}^2}
+  % U_\text{tot} = \sqrt{U_\text{OPA}^2 + U_\text{scope}^2}
+  U_\text{tot}^2 = {U_\text{OPA}^2 + U_\text{scope}^2} \label{eq:total-noise}
 \end{equation}
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=.6\textwidth]{noise-scope4}
+  \caption{Noise measurement of the oscilloscope. The grounded input is on channel 2 (blue)
+    and its FFT on \textit{Math1} (purple).}
+  \label{fig:noise-scope}
+\end{figure}
+
+We read $U_\text{tot} = \SI{25.15(50)}{\uV}$ from \figref{fig:noise-opa} and
+$U_\text{tot} = \SI{3.35(20)}{\uV}$ from \figref{fig:noise-scope},
+where the errors are estimated based on how much the measurements varied over time
+while performing the experiment. Rearranging \eqref{eq:total-noise}, we get
+\begin{equation*}
+  U_\text{OPA} = \sqrt{U_\text{tot}^2 - U_\text{scope}^2} = \SI{24.93(51)}{\uV}
+\end{equation*}
+where the uncertainty was calculated using error propagation.
+
+According to \cite{noise-analysis}, spot noise is the
+\enquote{noise power normalized to \SI{1}{\Hz} bandwidth (at a particular center frequency)},
+i.e. $\frac{\Delta P}{\Delta f}$, which is proportional to $\frac{\Delta U^2}{\Delta f}$.
+In our case $\Delta U = U_\text{OPA}$ and $\Delta f = \SI{5}{\kHz}$.
+When considering sources of noise in the context of a circuit, it becomes useful to describe
+them by noise voltage instead of power. The voltage spot noise density $E_O$ (\textit{O} for \textit{output}) 
+is then then proportional to
+the square root of the power density and can be calculated using the values given above:
+\begin{equation}
+  E_O = \sqrt{\frac{\Delta U^2}{\Delta f}} = \frac{\Delta U}{\sqrt{\Delta f}} = \frac{U_\text{OPA}}{\sqrt{\Delta f}} = \SI{352.5(71)}{\nV\per\sqrt{\Hz}}
+\end{equation}
+
+$E_O$ depends not only on the op amp but also on the components used in the circuit.
+To be able compare our measurement to datasheet values,
+we will calculate the input noise voltage $E_\text{NI}$ which is an intrinsic property of the op amp used.
+The relevant relation is \cite{noise-analysis}
+\begin{equation}
+  E_O = \sqrt{(E_\text{NI}^2 + (I_\text{BN}R_s)^2 + 4kTR_s)G^2 + (I_\text{BI}R_f)^2 + 4kTR_fG}
+\end{equation}
+Where $R_f$, $R_s$ and $G$ are the values from \ref{setup}; $I_\text{BI}$ and $I_\text{BN}$ are
+the op amp's inverting and non-inverting input noise current, respectively;
+$k$ is the Boltzmann constant and $T$ the temperature of the circuit which we assume to be $T=\SI{300}{\K}$.
+
+
+
 
 
 \clearpage
