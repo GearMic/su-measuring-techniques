@@ -21,7 +21,7 @@
 
 \begin{document}
 
-\begin{titlepage}
+% \begin{titlepage}
 \begin{center}
 \vspace*{1cm}
 
@@ -49,7 +49,7 @@ This noise is generally dependent on the frequency of operation.
 The goal of this experiment is to measure the voltage spot noise density of a Burr-Brown OPA37 op amp
 which corresponds to the amount of noise present at a specific frequency.
 
-\end{titlepage}
+% \end{titlepage}
 
 
 
@@ -163,7 +163,8 @@ them by noise voltage instead of power. The voltage spot noise density $E_O$ (\t
 is then then proportional to
 the square root of the power density and can be calculated using the values given above:
 \begin{equation}
-  E_O = \sqrt{\frac{\Delta U^2}{\Delta f}} = \frac{\Delta U}{\sqrt{\Delta f}} = \frac{U_\text{OPA}}{\sqrt{\Delta f}} = \SI{352.5(71)}{\nV\per\sqrt{\Hz}}
+  E_O = \sqrt{\frac{\Delta U^2}{\Delta f}} = \frac{\Delta U}{\sqrt{\Delta f}} =
+    \frac{U_\text{OPA}}{\sqrt{\Delta f}} = \SI{352.5(71)}{\nV\per\sqrt{\Hz}}
 \end{equation}
 
 $E_O$ depends not only on the op amp but also on the components used in the circuit.
@@ -173,10 +174,33 @@ The relevant relation is \cite{noise-analysis}
 \begin{equation}
   E_O = \sqrt{(E_\text{NI}^2 + (I_\text{BN}R_s)^2 + 4kTR_s)G^2 + (I_\text{BI}R_f)^2 + 4kTR_fG}
 \end{equation}
-Where $R_f$, $R_s$ and $G$ are the values from \ref{setup}; $I_\text{BI}$ and $I_\text{BN}$ are
+Where $R_f$, and $G$ are the values from \ref{setup}; $R_s = 0$ for our circuit; $I_\text{BI}$ and $I_\text{BN}$ are
 the op amp's inverting and non-inverting input noise current, respectively;
-$k$ is the Boltzmann constant and $T$ the temperature of the circuit which we assume to be $T=\SI{300}{\K}$.
+$k$ is the Boltzmann constant and $T$ the temperature of the circuit.
 
+Estimating $T=\SI{290}{\K}$ and using $4kT = \SI{1.6e-20}{\J} \cdot \frac{T}{\SI{290}{\K}} = \SI{1.6e-20}{\J}$
+\cite{noise-analysis}, we have $4kTR_fG \approx \SI{1.6e-12}{\V\squared\per\Hz} = \SI{1.6e+6}{\nV\squared\per\Hz}$.
+The OPA37 has a bipolar input stage meaning that the inverting and non-inverting input noise current are the
+same \cite{noise-analysis}. At \SI{1}{\kHz} they have a value of \SI{0.4}{\pA\per\sqrt{\Hz}},
+so $(I_\text{BI}R_f)^2 \approx (\SI{40}{\nV\per\sqrt{\Hz}})^2 = \SI{1.6e3}{\nV\squared\per\Hz}$
+which can be neglected compared to the other term. Using this approximation and $R_s = 0$, we get
+\begin{align*}
+  E_O^2 = (E_\text{NI}G)^2 + 4kTR_fG
+  \implies &E_\text{NI} = \frac{1}{G}\sqrt{E_O^2 - 4kTR_fG} = \SI{0.352(007)}{\nV\per\sqrt{\Hz}}.
+\end{align*}
+\todo{calculation actually wrong!}According to the OPA37 datasheet \cite{datasheet} the typical $E_O$ value at \SI{1}{\kHz} is \SI{0.32}{\nV\per\sqrt{\Hz}}
+and the maximum is \SI{0.45}{\nV\per\sqrt{\Hz}}. Our measured value lies well within that range.
+
+
+
+\section{Conclusion}
+In this experiment, the gain of a non-inverting operational amplifier circuit as well as its output spot noise density
+were measured. The measured gain is about \SI{6}{\percent} larger than the value expected from the resistor values,
+which is likely due to imprecisions of the resistors.
+
+The voltage spot noise density of the output at \SI{1}{\kHz} was measured using an oscilloscope with an FFT function
+and found to be \SI{352.5(71)}{\nV\per\sqrt{\Hz}}. From this, the input noise voltage of the used op amp (Burr-Brown OPA37)
+was calculated to be \SI{0.352(007)}{\nV\per\sqrt{\Hz}} which is in line with the range given in the datasheet.
 
 
 
