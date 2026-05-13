@@ -45,8 +45,9 @@ May 2026
 
 
 \section*{Introduction}
-Amplitude modulation is an important technique in communications systems, enabling
+Amplitude modulation (AM) is an important technique in communications systems, enabling
 the use of a specific carrier frequency to transmit signals of different frequencies.
+
 In this experiment, an amplitude modulation circuit will be used to modulate
 a carrier voltage with a modulation signal and the resulting signal will be analyzed.
 The signal will be demodulated using a diode rectifier.
@@ -55,14 +56,57 @@ The signal will be demodulated using a diode rectifier.
 
 
 
-\section{Setup}\label{setup}
-The main part of the amplitude modulation circuit is shown in \figref{fig:am-circuit}
+\section{Theory}
+Amplitude modulation involves a carrier voltage $V_c(t) = A\cos{\omega_c t}$, 
+and a modulation signal $S(t) = m\cos{\omega_m t}$,
+where the former must be of a higher frequency than the latter.
+An amplitude-modulated signal is obtained by adding the carrier multiplied by the modulation
+to the original carrier signal:
+\begin{equation}
+  V(t) = V_c(t) (1+S(t)) = A\sin{\omega_c t} (1+m\cos{\omega_m t}) \label{eq:am-formula}
+\end{equation}
+We must have $m\leq 1$ so that the sign voltage is never flipped by the modulation.
+Using trigonometric identities, \eqref{eq:am-formula} can be brought to the form \cite{manual}
+\begin{equation*}
+  V(t) = A \cos{\omega_c t} + \frac{m}{2}A
+    \left[\cos((\omega_c-\omega_m)t) + \cos((\omega_c+\omega_m)t)\right]. \label{eq:am-simplified}
+\end{equation*}
+From this we can see that the fourier transform of the modulated signal will
+contain the original carrier frequency along with side bands shifted left and right
+by the amount of the modulation frequency. These side bands can never have more than
+half the amplitude of the carrier band because $m\leq 1$.
+
+
+
+\section{Setup}\label{Setup}
+The main part of the amplitude modulation circuit is shown in \figref{fig:am-circuit}.
 \begin{figure}
   \centering
-  \includegraphics[width=.6\textwidth]{am-circuit}
+  \includegraphics[width=.65\textwidth]{am-circuit}
   \caption{Schematic of the main part of the amplitude modulation circuit \cite{manual}.}
   \label{fig:am-circuit}
 \end{figure}
+The central component is a CA3080 transconductance amplifier, which produces an output current
+proportional to the voltage $v_i$ at its input and the Amplifier Bias Control current $i_{ABC}$.
+$v_i$ comes from the carrier voltage TE and $i_{ABC}$ is produced by
+amplifying the modulation voltage TF using a 741 operational amplifier (op amp; 741-1)
+and converting it to a current using a resistor. The output currect $i_o$ is then
+proportional to the product of TE and TF\todo{actually $V_c(1+V_m)$?} and is converted to the desired modulated voltage
+using another op amp (741-2).
+
+% The circuit additionally contains an oscillator to produce the carrier voltage
+% as well as two additional op amps creating copies of the output with positive and negative polarities
+
+
+
+\section{Modulation Experiment}
+The required carrier voltage is produced by an oscillator on the circuit board containing the modulation circuit.
+We view the voltage on the oscilloscope to determine its frequency, see fig. \todo{figure}.
+
+
+
+
+\section{Demodulation Experiment}
 
 
 
