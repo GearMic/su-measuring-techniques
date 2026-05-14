@@ -9,6 +9,7 @@
 
 \usepackage{graphicx}
 \graphicspath{{./figure}}
+\usepackage{trimclip}
 % \usepackage{xspace}
 \usepackage{csquotes}
 \usepackage{hyperref}
@@ -67,10 +68,10 @@ to the original carrier signal:
 \end{equation}
 We must have $m\leq 1$ so that the sign voltage is never flipped by the modulation.
 Using trigonometric identities, \eqref{eq:am-formula} can be brought to the form \cite{manual}
-\begin{equation*}
+\begin{equation}
   V(t) = A \cos{\omega_c t} + \frac{m}{2}A
     \left[\cos((\omega_c-\omega_m)t) + \cos((\omega_c+\omega_m)t)\right]. \label{eq:am-simplified}
-\end{equation*}
+\end{equation}
 From this we can see that the fourier transform of the modulated signal will
 contain the original carrier frequency along with side bands shifted left and right
 by the amount of the modulation frequency. These side bands can never have more than
@@ -100,9 +101,97 @@ using another op amp (741-2).
 
 
 \section{Modulation Experiment}
-The required carrier voltage is produced by an oscillator on the circuit board containing the modulation circuit.
-We view the voltage on the oscilloscope to determine its frequency, see fig. \todo{figure}.
+The required carrier voltage is produced by an oscillator on the circuit board (PCB) containing the modulation circuit,
+see \figref{fig:am-board}.
+\begin{figure}[h]
+  \centering
+  % \includegraphics[trim={0 0 0 0},clip,angle=90,width=.6\textwidth]{board2}
+  \clipbox{{.1\width} {.15\totalheight} {.1\width} {.25\totalheight}}
+    {\includegraphics[angle=90,width=.6\textwidth]{board2}}
+  \caption{The PCB containing the modulation circuit (in the center, marked as \texttt{Modulator circuit})
+    and related circuits. Among them is the \texttt{Carrier generator} which produces the carrier wave
+    used for the modulation.
+    % The carrier can be measured using the blue jumper wire exiting the picture
+    % to the top.
+    }
+  \label{fig:am-board}
+\end{figure}
+the amplitude of the carrier and the degree of modulation can be adjusted using trimmer potentiometers 
+\texttt{Amplitude adjust} and \texttt{Modulator trim} on the board. Due to issues with the circuit,
+the carrier may also be reshaped when adjusting its amplitude. For this reason,
+the carrier and modulated voltage was closer to a square shape than a sine wave
+in our case.
 
+We generate the modulation signal using a waveform generator and adjust the potentiometers to get
+a strong degree of modulation.
+We view the modulated voltage along with the modulation signal on the oscilloscope, see \figref{fig:modulation350}.
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=.6\textwidth]{modulation350}
+  \caption{
+    Channel 1 (yellow): modulation signal at \SI{350}{\Hz}, channel 2 (blue): modulated voltage,
+    math 2 (purple): FFT of the modulated voltage with a cursor (\texttt{f1}) at the main frequency band.
+  }
+  \label{fig:modulation350}
+\end{figure}
+The modulated signal noticeably varies in amplitude at the same frequency and phase
+as the modulation. The carrier frequency, which is significantly higher than the modulation
+frequency, can be seen. The oscilloscope's fast fourier transform (FFT) function shows
+the carrier frequency to be at around \SI{2.4}{\kHz}.
+
+We see that the modulated signal always follows the modulation frequency,
+see \figref{fig:modulation-comparison}.
+\begin{figure}[h]
+  \centering
+  \begin{minipage}{.5\textwidth}
+    \includegraphics[width=\textwidth]{modulation350-2.jpg}
+  \end{minipage}%
+  \begin{minipage}{.5\textwidth}
+    \includegraphics[width=\textwidth]{modulation200.jpg}
+  \end{minipage}
+  \caption{
+    Comparison of the modulated signal at two different modulation frequencies,
+    \SI{350}{\Hz} (left) and \SI{200}{\Hz} (right).
+    }
+  \label{fig:modulation-comparison}
+\end{figure}
+With a modulation frequency of \SI{350}{\Hz}, we consider the FFT 
+of the modulated voltage, see \figref{fig:fft350}.
+\begin{figure}[h]
+  \centering
+  \begin{minipage}{.5\textwidth}
+    \includegraphics[width=\textwidth]{fft350}
+  \end{minipage}%
+  \begin{minipage}{.5\textwidth}
+    \includegraphics[width=\textwidth]{fft350-1}
+  \end{minipage}
+  \caption{
+    FFT of the signal modulated at \SI{350}{\Hz} with cursors for the carrier band
+    and the first side band on the left (left picture) and right (right picture).
+    }
+  \label{fig:fft350}
+\end{figure}
+We see a main peak at the carrier frequency, approximately \SI{2.4}{\kHz}
+As well as multiple side bands. We measure the distance to the first side bands
+to the left and right using cursors on the oscilloscope. The distance between the
+cursors is displayed as \texttt{\Delta f} and is roughly \SI{350}{\Hz} corresponding
+to the modulation frequency, as expected from \eqref{eq:am-simplified}.
+
+The fact that there are more side bands of significant amplitude is likely
+due to the fact that the modulated wave is closer in shape to a square wave
+than a sine, meaning that it contains more overtones. The asymmetry of the side
+bands, with the left ones having a smaller amplitude than the right is also due
+to the imperfect shape of the wave.
+
+We can see that the largest side band
+has an amplitude of \SI{43.68}{\mV} while the carrier band has an amplitude of
+\SI{343.4}{\mV} making for a ratio $\sim 0.13$. When adjusting the amplitude
+of the modulation this ratio always stays significantly below $0.5$, as expected
+from \eqref{eq:am-simplified}. The fact that it never even reaches close to $0.5$
+can be explained by problems with the circuit, making the signal break
+down when trying to achieve a higher degree of modulation.
+For this reason we also cannot test what happens to the spectrum when trying to
+increase the ratio above $0.5$.
 
 
 
