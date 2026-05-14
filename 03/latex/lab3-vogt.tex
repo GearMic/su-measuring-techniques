@@ -1,7 +1,8 @@
-
 \documentclass[a4paper]{scrartcl}
-\usepackage{tgheros}
-\usepackage[T1]{fontenc}
+% \usepackage{tgheros}
+% \usepackage[T1]{fontenc}
+\usepackage{fontspec}
+\setsansfont{TeX Gyre Heros}[Ligatures=TeX]
 \usepackage[all]{nowidow}
 
 \usepackage[sorting=none]{biblatex}
@@ -16,9 +17,12 @@
 \usepackage{todonotes} % [disable]
 \usepackage{amsmath}
 \usepackage{siunitx}
+% \newfontfamily{\lmr}{Latin Modern Roman}
+% \sisetup{text-font-command=\lmr}
+% \sisetup{output-prefix={\ensuremath{\mu}}}
 \usepackage{amssymb}
 
-\newcommand{\figref}[1]{fig.\,\ref{#1}}
+\newcommand{\figref}[1]{Fig.\,\ref{#1}}
 
 
 \begin{document}
@@ -64,9 +68,9 @@ where the former must be of a higher frequency than the latter.
 An amplitude-modulated signal is obtained by adding the carrier multiplied by the modulation
 to the original carrier signal:
 \begin{equation}
-  V(t) = V_c(t) (1+S(t)) = A\sin{\omega_c t} (1+m\cos{\omega_m t}) \label{eq:am-formula}
+  V(t) = V_c(t)+ V_c(t)\cdot S(t)= A\sin{\omega_c t} (1+m\cos{\omega_m t}) \label{eq:am-formula}
 \end{equation}
-We must have $m\leq 1$ so that the sign voltage is never flipped by the modulation.
+Where we must have $m\leq 1$ so that the sign of the voltage is never flipped by the modulation.
 Using trigonometric identities, \eqref{eq:am-formula} can be brought to the form \cite{manual}
 \begin{equation}
   V(t) = A \cos{\omega_c t} + \frac{m}{2}A
@@ -80,19 +84,19 @@ half the amplitude of the carrier band because $m\leq 1$.
 
 
 \section{Setup}\label{Setup}
-The main part of the amplitude modulation circuit is shown in \figref{fig:am-circuit}.
+The main part of the used amplitude modulation circuit is shown in \figref{fig:am-circuit}.
+The central component is a CA3080 transconductance amplifier, which produces an output current
+proportional to the voltage $v_i$ at its input and the Amplifier Bias Control current $i_{ABC}$.
 \begin{figure}
   \centering
   \includegraphics[width=.65\textwidth]{am-circuit}
   \caption{Schematic of the main part of the amplitude modulation circuit \cite{manual}.}
   \label{fig:am-circuit}
 \end{figure}
-The central component is a CA3080 transconductance amplifier, which produces an output current
-proportional to the voltage $v_i$ at its input and the Amplifier Bias Control current $i_{ABC}$.
 $v_i$ comes from the carrier voltage TE and $i_{ABC}$ is produced by
 amplifying the modulation voltage TF using a 741 operational amplifier (op amp; 741-1)
-and converting it to a current using a resistor. The output currect $i_o$ is then
-proportional to the product of TE and TF\todo{actually $V_c(1+V_m)$?} and is converted to the desired modulated voltage
+and converting it to a current using a resistor. The output currect $i_o$ then depends
+on the product of TE and TF and is converted to the desired modulated voltage
 using another op amp (741-2).
 
 % The circuit additionally contains an oscillator to produce the carrier voltage
@@ -103,10 +107,10 @@ using another op amp (741-2).
 \section{Modulation Experiment}
 The required carrier voltage is produced by an oscillator on the circuit board (PCB) containing the modulation circuit,
 see \figref{fig:am-board}.
-\begin{figure}[h]
+\begin{figure}[htp]
   \centering
   % \includegraphics[trim={0 0 0 0},clip,angle=90,width=.6\textwidth]{board2}
-  \clipbox{{.1\width} {.15\totalheight} {.1\width} {.25\totalheight}}
+  \clipbox{{.15\width} {.2\totalheight} {.15\width} {.3\totalheight}}
     {\includegraphics[angle=90,width=.6\textwidth]{board2}}
   \caption{The PCB containing the modulation circuit (in the center, marked as \texttt{Modulator circuit})
     and related circuits. Among them is the \texttt{Carrier generator} which produces the carrier wave
@@ -116,16 +120,16 @@ see \figref{fig:am-board}.
     }
   \label{fig:am-board}
 \end{figure}
-the amplitude of the carrier and the degree of modulation can be adjusted using trimmer potentiometers 
+The amplitude of the carrier and the degree of modulation can be adjusted using trimmer potentiometers 
 \texttt{Amplitude adjust} and \texttt{Modulator trim} on the board. Due to issues with the circuit,
 the carrier may also be reshaped when adjusting its amplitude. For this reason,
-the carrier and modulated voltage was closer to a square shape than a sine wave
+the carrier voltage was closer to a square shape than a sine wave
 in our case.
 
-We generate the modulation signal using a waveform generator and adjust the potentiometers to get
+We generate the modulation signal using a waveform generator and adjust the trimmers to get
 a strong degree of modulation.
 We view the modulated voltage along with the modulation signal on the oscilloscope, see \figref{fig:modulation350}.
-\begin{figure}[h]
+\begin{figure}[htp]
   \centering
   \includegraphics[width=.6\textwidth]{modulation350}
   \caption{
@@ -139,12 +143,13 @@ as the modulation. The carrier frequency, which is significantly higher than the
 frequency, can be seen. The oscilloscope's fast fourier transform (FFT) function shows
 the carrier frequency to be at around \SI{2.4}{\kHz}.
 
-We see that the modulated signal always follows the modulation frequency,
-see \figref{fig:modulation-comparison}.
+We see that the modulated signal always follows the modulation,
+even when varying the modulation frequency, see \figref{fig:modulation-comparison}.
 \begin{figure}[h]
   \centering
   \begin{minipage}{.5\textwidth}
-    \includegraphics[width=\textwidth]{modulation350-2.jpg}
+    \clipbox{{.23\width} {.3\totalheight} {.27\width} {.2\totalheight}}
+      {\includegraphics[width=2\textwidth]{modulation350-2.jpg}}
   \end{minipage}%
   \begin{minipage}{.5\textwidth}
     \includegraphics[width=\textwidth]{modulation200.jpg}
@@ -155,6 +160,7 @@ see \figref{fig:modulation-comparison}.
     }
   \label{fig:modulation-comparison}
 \end{figure}
+
 With a modulation frequency of \SI{350}{\Hz}, we consider the FFT 
 of the modulated voltage, see \figref{fig:fft350}.
 \begin{figure}[h]
@@ -171,16 +177,16 @@ of the modulated voltage, see \figref{fig:fft350}.
     }
   \label{fig:fft350}
 \end{figure}
-We see a main peak at the carrier frequency, approximately \SI{2.4}{\kHz}
-As well as multiple side bands. We measure the distance to the first side bands
+We see a main peak at the carrier frequency, approximately \SI{2.4}{\kHz},
+as well as multiple side bands. We measure the distance to the first side bands
 to the left and right using cursors on the oscilloscope. The distance between the
 cursors is displayed as \texttt{\Delta f} and is roughly \SI{350}{\Hz} corresponding
 to the modulation frequency, as expected from \eqref{eq:am-simplified}.
 
-The fact that there are more side bands of significant amplitude is likely
-due to the fact that the modulated wave is closer in shape to a square wave
+The fact that there are more side bands is likely
+due to the modulated wave being closer in shape to a square wave
 than a sine, meaning that it contains more overtones. The asymmetry of the side
-bands, with the left ones having a smaller amplitude than the right is also due
+bands, with the left ones having a smaller amplitude than the right, is also due
 to the imperfect shape of the wave.
 
 We can see that the largest side band
@@ -196,15 +202,81 @@ increase the ratio above $0.5$.
 
 
 \section{Demodulation Experiment}
+To demodulate the signal, we use a diode feeding a resistor and capacitor
+connected in parallel, as shown in \figref{fig:demodulation-circuit}.
+\begin{figure}[h]
+  \begin{minipage}{.62\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{demodulation-circuit}
+    \caption{The diode circuit used for demodulation, in combination with a low-pass filter.}
+    \label{fig:demodulation-circuit}
+  \end{minipage}\hfill%
+  \begin{minipage}{.36\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{demodulation-waveform}
+    \caption{Example demodulated waveform.}
+    \label{fig:demodulation-waveform}
+  \end{minipage}
+\end{figure}
+When connecting the modulated voltage as $U_\text{in}$, the diode works as a rectifier,
+cutting off the negative parts and leading to the individual peaks seen in \figref{fig:demodulation-waveform}.
+We use a Germanium
+diode which has a low threshold voltage \cite{manual} in order to remove as little of the positive
+signal as possible. The capacitor $C_1$ is charged instantaneously by the voltage peaks but when the
+voltage drops again, it discharges through $R_1$ in an exponential drop-off with time constant
+$\tau = R_1C_1$. This leads to the demodulation circuit's output $U_1$ having the enveloping shape
+seen in \figref{fig:demodulation-waveform}. This kind of signal is mostly made up of the modulation
+frequency with only little carrier frequency content left, meaning that the signal has been demodulated.
 
+The exponential drop-off should be slow enough that it does not closely follow the shape of the peaks,
+but fast enough so that changes can still happen at the frequency of the modulation.
+The time constant therefore needs to be on the order of the period of the carrier frequency,
+$T = \frac{1}{\SI{2.4}{\kHz}} \sim \SI{400}{\micro\s}$.
 
+First, we only use the demodulation circuit, i.e. the output is $U_1$ in \figref{fig:demodulation-circuit}.
+The result with $\tau \approx \SI{2.5}{\ms}$ is shown in \figref{fig:demodulation-1}. 
+\begin{figure}[htp]
+  \centering
+  \includegraphics[width=.65\textwidth]{demodulation-2.2uF-1.14kOhm.jpg}
+  \caption{Demodulation with $C_1 = \SI{2.2}{\uF}$ and $R_1 = \SI{1.14}{\kohm}$.}
+  \label{fig:demodulation-1}
+\end{figure}
+$\tau$ is significantly larger than $T$ and we see that some of the shape of the modulation signal is lost
+in the long exponential decays. In this case, there were also problems with the modulation circuit
+which is why the modulated signal is distorted in some places.
 
-\section{Conclusion}
-
+Demodulation with $\tau \approx \SI{390}{\us}$ is shown in \figref{fig:demoulation-2}.
+\begin{figure}[htp]
+  \centering
+  \includegraphics[width=.65\textwidth]{demodulation-100nF-3.9kOhm-lowpass.jpg}
+  \caption{Demodulation with $C_1 = \SI{100}{\nF}$ and $R_1 = \SI{3.9}{\kohm}$.}
+  \label{fig:demoulation-2}
+\end{figure}
+This time, we also included the low-pass filter shown in \figref{fig:demodulation-circuit},
+however this appears not to have made a significant difference. Likely the cutoff frequency
+was too high.
+The signal follows the individual peaks more closely than before.
+Most of the carrier-frequency content is cut away,
+though there are still significant variations over one period of the carrier signal.
+Ideally, the time constant should thus be chosen slightly larger than \SI{390}{\ns},
+which was not possible with the components available during the experiment.
 
 
 
 \clearpage
+\section{Conclusion}
+In this experiment, an amplitude modulation circuit was used to modulate a carrier voltage with a 
+modulation signal. The main frequency components of the resulting signal were inspected using
+the FFT function of an oscilloscope. As expected, it was found that the main frequency component
+is at the carrier frequency with side bands shifted up and down by the modulation frequency.
+
+The modulated signal was demodulated using a circuit containing a diode, a capacitor and a resistor.
+To improve the quality of the demodulated signal, different $RC$ time constants were tested and
+and an additional low-pass filter was used.
+
+
+
+\vfill
 \printbibliography
 
 \end{document}
