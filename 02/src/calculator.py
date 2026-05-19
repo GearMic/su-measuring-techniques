@@ -22,3 +22,4 @@ G = 1001
 Eni = 1/G * np.sqrt(Eo**2 - fourkt*R_f*G)
 EniErr = Eo*EoErr/G**2/Eni
 print("Eni", Eni, EniErr)
+print("Eni/max", Eni/4.5)
