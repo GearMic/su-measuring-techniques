@@ -44,10 +44,10 @@ May 2026
 
 
 \section*{Introduction}
-Noise can occur in operational amplifiers (op amps; OPA) due to various effects of their internal components.
+Noise can occur in operational amplifiers (op amps; OPA) due to various effects of their internal function.
 This noise is generally dependent on the frequency of operation.
-The goal of this experiment is to measure the voltage spot noise density of a Burr-Brown OPA37 op amp
-which corresponds to the amount of noise present at a specific frequency.
+The amount of noise present at a specific frequency is quantified by the \textit{spot noise density}
+and the goal of our experiment is to measure this quantity for a Burr-Brown OPA37 op amp.
 
 % \end{titlepage}
 
@@ -55,17 +55,22 @@ which corresponds to the amount of noise present at a specific frequency.
 
 \section{Setup}\label{setup}
 The op amp is set up in a non-inverting amplifier circuit, see \figref{fig:opa-circuit}.
+The expected gain is $G=\frac{U_\text{in}}{U_\text{out}} = 1+\frac{R_f}{R_g}=1001$.
 \begin{figure}[h]
   \centering
   \includegraphics[width=.5\textwidth]{opa-circuit}
   \caption{non-inverting amplifier circuit. $R_f = \SI{101}{\kohm}, R_g = \SI{101}{\ohm}$ \cite{manual}}
   \label{fig:opa-circuit}
 \end{figure}
-The expected gain is $G=\frac{U_\text{in}}{U_\text{out}} = 1+\frac{R_f}{R_g}=1001$.
+
+The circuit is contained on a printed circuit board (PCB) which has a metal casing
+to shield against noise from electromagnetic fields. Additionally to the connections shown 
+in the diagram, the op amp requires a positive and a negative supply voltage which
+is provided here by \SI{9}{\V} batteries.
+
 The capacitor in parallel to $R_f$ effectively lowers the resistance and therefore the gain for high frequencies,
 acting as a low pass filter.
 This prevents aliasing effects due to sampling of high frequencies \cite{manual}.
-
 The input of the circuit is fed by a signal generator and the output is measured using an oscilloscope.
 
 
@@ -100,16 +105,16 @@ measurements in \figref{fig:gain-measurement} are used:
   G_\text{exp} = \frac{\overline{U}_\text{out,\,pp}}{\overline{U}_\text{in,\,pp}} = \frac{\SI{5.72}{\V} + \SI{5.64}{\V}}{\SI{5.404}{\mV} + \SI{5.368}{\mV}} \approx 1058
 \end{equation*}
 The experimantal value is about \SI{6}{\percent} larger than the value of $1001$ calculated from the resistor values.
-This is likely due to imprecision of the actual resistance values.
+This is likely due to imprecision of the resistance values.
 
 
 
 \section{Voltage Spot Noise Measurement}
 The main task of the experiment is to measure the voltage spot noise
 at a frequency of \SI{1}{\kHz} and calculate the op amp's input noise voltage $E_\text{NI}$ from it.
-To do this, the waveform generator is turned of and the op amp circuit's input connected to ground.
+To do this, the waveform generator is turned off and the op amp circuit's input connected to ground.
 The output is again measured on the oscilloscope, which can be configured to calculate the fast fourier transform (FFT)
-of the waveform. Various parameters for this can be adjusted and the final values we settled on can be seen in
+of the waveform. After some experimentation we settle on the transform parameters shown in \figref{fig:fourier-params}.
 \figref{fig:fourier-params}.
 \begin{figure}
   \centering
@@ -118,7 +123,7 @@ of the waveform. Various parameters for this can be adjusted and the final value
   \label{fig:fourier-params}
 \end{figure}
 For following calculations, the duration \SI{400}{\ms} of the sampled waveform and the resulting bandwidth
-per bin $\Delta f = \SI{5}{\kHz}$ are most important.
+per bin $\Delta f = \SI{5}{\kHz}$ are important.
 
 Again, an averaging over time is performed to filter out any temporary effects.
 The resulting time-averaged FFT is shown in \figref{fig:noise-opa}, with a cursor marking the noise at \SI{1}{\kHz}.
