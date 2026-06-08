@@ -32,7 +32,7 @@
 \vspace*{1cm}
 
 \LARGE
-  \textbf{Amplitude Modulation and Demodulation}
+  \textbf{Control and Regulation Systems}
 
 \vspace{.2cm}
 
@@ -50,16 +50,56 @@ May 2026
 
 
 \section*{Introduction}
+In this laboratory exercise, a PID control system will be used to control a pump with the
+goal of keeping a constant water level in a small tank. The control system has
+three tweakable parameters which will be combined in different ways
+to optimize the pump's behaviour.
 
 % \end{titlepage}
 
 
 
-\section{Theory}
+\section{Theory and Background}
+Control systems are used to regulate the behaviour of a system (the \textit{controlled system})
+that depends on various variables. In the case of this experiment, the controlled system is
+a pump leading into a water tank whose water level is measured by a sensor. The control system
+is a microcontroller (Arduino) that receives information about the water level and can
+regulate the speed of the pump.
+
+PID controllers are a type of control system that regulates control variables (the speed of the pump)
+based on the difference between the controlled variable (the water level in the tank) %$e(t) = r(t) - y(t)$
+and a reference value (the desired water level). This difference is called the error $e(t)$
+and a PID system regulates the control variable according to three terms derived from the error:
+\begin{itemize}
+  \item P -- Proportional $\proptop e(t)$
+  \item I -- Integral $\propto \int e(t) \text{d}t$
+  \item D -- Differential $\proptop \frac{\text{d}e}{\text{d}t}$
+\end{itemize}
+The strength of the individual terms can be controlled by three parameters $P$, $I$ and $D$.
 
 
 
-\section{Setup}\label{Setup}
+\section{Setup and Experiment}\label{Setup}
+The experimental setup consists of a pump leading into a water tank. The pump is controlled
+by an Arduino based on the water level in the tank. This works by means of a PID controller
+implemented in software. This implementation is accompanied by a graphical user interface
+that can be used to change parameters and watch parameter changes over time.
+
+Different parameter combinations are tested to understand the behaviour of the PID system.
+
+\subsection{Proportional Term}
+\begin{figure}
+  \centering
+  \includegraphics[width=.6\textwidth]{p1}
+  \caption{Water level changes with only the propotional ($P$) term.
+    Parameters and coefficient values are shown as sliders near the top of the window.
+    The order is: target level, maximum level, $P$, $I$, $D$. The left two graphs
+    show the water level over time.}
+  \label{fig:p1}
+\end{figure}
+
+This is because the pressure acting back on the pump is higher with a higher water level,
+making the same pump activation cause a lesser increase in the level.
 
 
 
