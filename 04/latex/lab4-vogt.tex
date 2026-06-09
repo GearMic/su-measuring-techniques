@@ -140,14 +140,26 @@ at the target level instead of below it.
 
 
 \subsection{Proportional, Integral and Derivative Term}
+Finally we also add a derivative term, see \figref{fig:pid1}.
+\begin{figure}
+  \centering
+  \includegraphics[width=.6\textwidth]{pi1}
+  \caption{Water level development with the propotional ($P$), integral ($I$) and derivative ($D$) term.}
+  \label{fig:pid1}
+\end{figure}
+With a constant target level, there is no qualitative difference to the previous iteration, except for
+small oscillations that are likely due to the delay between changes in the derivative of the measured level
+and the effect of the Arduino's output. The derivative term may be helpful to reach equilibrium more quickly
+when the target level is changed, however this was not thoroughly investigated here.
 
 
-\section{Modulation Experiment}
 
-
-
-\clearpage
 \section{Conclusion}
+In this experiment, a PID controller was used to control a pump with the goal of keeping a set water level
+in a tank. Different parameter combinations were used and compared. Using only the proportional ($P$)
+term resulted in a permanent offset between the target level and the true level, which could be fixed
+by adding the integral ($I$) term. Adding the differential ($D$) term has the potential to make the
+water level settle towards the target more quickly.
 
 
 
