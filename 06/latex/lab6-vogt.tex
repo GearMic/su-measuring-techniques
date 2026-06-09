@@ -9,7 +9,7 @@
 \addbibresource{references.bib}
 
 \usepackage{graphicx}
-\graphicspath{{./figure/}}
+\graphicspath{{./figure}}
 \usepackage{trimclip}
 % \usepackage{xspace}
 \usepackage{csquotes}
@@ -32,7 +32,7 @@
 \vspace*{1cm}
 
 \LARGE
-  \textbf{Control and Regulation Systems}
+  \textbf{Amplitude Modulation and Demodulation}
 
 \vspace{.2cm}
 
@@ -50,96 +50,17 @@ May 2026
 
 
 \section*{Introduction}
-In this laboratory exercise, a PID control system will be used to control a pump with the
-goal of keeping a constant water level in a small tank. The control system has
-three tweakable parameters which will be combined in different ways
-to optimize the pump's behaviour.
 
 % \end{titlepage}
 
 
 
-\section{Theory and Background}
-Control systems are used to regulate the behaviour of a system (the \textit{controlled system})
-that depends on various variables. In the case of this experiment, the controlled system is
-a pump leading into a water tank whose water level is measured by a sensor. The control system
-is a microcontroller (Arduino) that receives information about the water level and can
-regulate the speed of the pump.
-
-PID controllers are a type of control system that regulates control variables (the speed of the pump)
-based on the difference between the controlled variable (the water level in the tank) %$e(t) = r(t) - y(t)$
-and a reference value (the desired water level). This difference is called the error $e(t)$
-and a PID system regulates the control variable according to three terms derived from the error:
-\begin{itemize}
-  \item P -- Proportional $\propto e(t)$
-  \item I -- Integral $\propto \int e(t) \text{d}t$
-  \item D -- Differential $\propto \frac{\text{d}e}{\text{d}t}$
-\end{itemize}
-The strength of the individual terms can be controlled by three parameters $P$, $I$ and $D$.
+\section{Theory}
 
 
 
-\section{Setup and Experiment}\label{Setup}
-The experimental setup consists of a pump leading into a water tank. The pump is controlled
-by an Arduino based on the water level in the tank. This works by means of a PID controller
-implemented in software. This implementation is accompanied by a graphical user interface
-that can be used to change parameters and watch parameter changes over time.
+\section{Setup}\label{Setup}
 
-Different parameter combinations are tested to understand the behaviour of the PID system.
-
-
-\subsection{Proportional Term}
-We begin by only using the proportional term. One choice of parameters and the
-resulting development of the water level can be seen in \figref{fig:p1}.
-\begin{figure}
-  \centering
-  \includegraphics[width=.6\textwidth]{p1}
-  \caption{Water level development with only the propotional ($P$) term.
-    Parameters and coefficient values are shown as sliders near the top of the window.
-    The order is: target level, maximum level, $P$, $I$, $D$. The left two graphs
-    show the water level over time.}
-  \label{fig:p1}
-\end{figure}
-We can see that a high $P$ parameter leads to oscillations of the water level.
-This is caused by the delay between a change in the Arduino's output and the resulting change
-in the actual water level. In the figure, the parameter is deliberately chosen such that
-there are stable oscillations, i.\,e.\ the oscillations do not increase or decrease in amplitude
-over time. For a target water level of $257$, the point of stable oscillations is $P_0 = 3.94$
-where the period of oscillations is roughly $T_0 = \SI{6.2}{\s}$.
-
-Trying out different combinations, we see that the value of $P_0$ is not universal but depends
-on the target water level.
-This is because the pressure acting back on the pump is higher with a higher water level,
-making the same pump activation cause a lesser increase in the level, so that a higher
-$P$ parameter is required for stable oscillations.
-
-Generally, oscillations are unwanted behaviour of a control system. However, determining $P_0$
-can be useful to find good parameter values based on a set of rules. In our case, such methods
-did not prove to be very effective and parameters were mostly determined by trial and error.
-
-Looking at the level around which the oscillations occur, we see that it is significantly lower
-than the actual target level. This is because (if we ignore the effects leading to oscillations)
-at some point the pressure exerted by the pump (proporitonal to \dots) and the back-pressure due to gravity
-reach an equilibrium at some point.
-
-
-\subsection{Proportional and Integral Term}
-Next we add the integral term, see \figref{fig:pi1}, where we have chosen $I \neq 0$ and $P$
-low enough so that there are no oscillations.
-\begin{figure}
-  \centering
-  \includegraphics[width=.6\textwidth]{pi1}
-  \caption{Water level development with the propotional ($P$) and integral ($I$) term.}
-  \label{fig:pi1}
-\end{figure}
-Compared to only using the $P$ term, we can see that the water level settles at the target
-level instead of having a permanent offset. This is because, whenever there is an offset for an
-extended period of time, the integral of $e(t)$ increases until the offset is zero. The Integral
-term thus adds a permanent amount of pump activation that is enough to put the equilibrium point
-at the target level instead of below it.
-
-
-\subsection{Proportional, Integral and Derivative Term}
 
 
 \section{Modulation Experiment}
