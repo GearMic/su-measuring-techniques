@@ -9,7 +9,7 @@
 \addbibresource{references.bib}
 
 \usepackage{graphicx}
-\graphicspath{{./figure}}
+\graphicspath{{./figure/}}
 \usepackage{trimclip}
 % \usepackage{xspace}
 \usepackage{csquotes}
@@ -71,9 +71,9 @@ based on the difference between the controlled variable (the water level in the 
 and a reference value (the desired water level). This difference is called the error $e(t)$
 and a PID system regulates the control variable according to three terms derived from the error:
 \begin{itemize}
-  \item P -- Proportional $\proptop e(t)$
+  \item P -- Proportional $\propto e(t)$
   \item I -- Integral $\propto \int e(t) \text{d}t$
-  \item D -- Differential $\proptop \frac{\text{d}e}{\text{d}t}$
+  \item D -- Differential $\propto \frac{\text{d}e}{\text{d}t}$
 \end{itemize}
 The strength of the individual terms can be controlled by three parameters $P$, $I$ and $D$.
 
@@ -94,7 +94,7 @@ resulting development of the water level can be seen in \figref{fig:p1}.
 \begin{figure}
   \centering
   \includegraphics[width=.6\textwidth]{p1}
-  \caption{Water level changes with only the propotional ($P$) term.
+  \caption{Water level development with only the propotional ($P$) term.
     Parameters and coefficient values are shown as sliders near the top of the window.
     The order is: target level, maximum level, $P$, $I$, $D$. The left two graphs
     show the water level over time.}
@@ -124,17 +124,22 @@ reach an equilibrium at some point.
 
 
 \subsection{Proportional and Integral Term}
-Next we add the integral term. One choice of parameters and the
-resulting development of the water level can be seen in \figref{fig:p1}.
+Next we add the integral term, see \figref{fig:pi1}, where we have chosen $I \neq 0$ and $P$
+low enough so that there are no oscillations.
 \begin{figure}
   \centering
-  \includegraphics[width=.6\textwidth]{p1}
-  \caption{Water level changes with only the propotional ($P$) term.
-    Parameters and coefficient values are shown as sliders near the top of the window.
-    The order is: target level, maximum level, $P$, $I$, $D$. The left two graphs
-    show the water level over time.}
-  \label{fig:p1}
+  \includegraphics[width=.6\textwidth]{pi1}
+  \caption{Water level development with the propotional ($P$) and integral ($I$) term.}
+  \label{fig:pi1}
 \end{figure}
+Compared to only using the $P$ term, we can see that the water level settles at the target
+level instead of having a permanent offset. This is because, whenever there is an offset for an
+extended period of time, the integral of $e(t)$ increases until the offset is zero. The Integral
+term thus adds a permanent amount of pump activation that is enough to put the equilibrium point
+at the target level instead of below it.
+
+
+\subsection{Proportional, Integral and Derivative Term}
 
 
 \section{Modulation Experiment}
