@@ -53,7 +53,7 @@ May 2026
 In this laboratory exercise, a PID control system will be used to control a pump with the
 goal of keeping a constant water level in a small tank. The control system has
 three tweakable parameters which will be combined in different ways
-to optimize the pump's behaviour.
+to optimize the pump's behaviour \cite{manual}.
 
 % \end{titlepage}
 
@@ -83,9 +83,9 @@ The strength of the individual terms can be controlled by three parameters $P$, 
 The experimental setup consists of a pump leading into a water tank. The pump is controlled
 by an Arduino based on the water level in the tank. This works by means of a PID controller
 implemented in software. This implementation is accompanied by a graphical user interface
-that can be used to change parameters and watch parameter changes over time.
+that can be used to change parameters and watch system changes over time, see e.\,g.\ \figref{fig:p1}.
 
-Different parameter combinations are tested to understand the behaviour of the PID system.
+In the following, different parameter combinations are tested to understand the behaviour of the PID system.
 
 
 \subsection{Proportional Term}
@@ -93,7 +93,7 @@ We begin by only using the proportional term. One choice of parameters and the
 resulting development of the water level can be seen in \figref{fig:p1}.
 \begin{figure}
   \centering
-  \includegraphics[width=.6\textwidth]{p1}
+  \includegraphics[width=.7\textwidth]{p1}
   \caption{Water level development with only the propotional ($P$) term.
     Parameters and coefficient values are shown as sliders near the top of the window.
     The order is: target level, maximum level, $P$, $I$, $D$. The left two graphs
@@ -125,10 +125,10 @@ reach an equilibrium at some point.
 
 \subsection{Proportional and Integral Term}
 Next we add the integral term, see \figref{fig:pi1}, where we have chosen $I \neq 0$ and $P$
-low enough so that there are no oscillations.
+low enough so that the oscillations settle down.
 \begin{figure}
   \centering
-  \includegraphics[width=.6\textwidth]{pi1}
+  \includegraphics[width=.7\textwidth]{pi1}
   \caption{Water level development with the propotional ($P$) and integral ($I$) term.}
   \label{fig:pi1}
 \end{figure}
@@ -143,14 +143,14 @@ at the target level instead of below it.
 Finally we also add a derivative term, see \figref{fig:pid1}.
 \begin{figure}
   \centering
-  \includegraphics[width=.6\textwidth]{pi1}
+  \includegraphics[width=.7\textwidth]{pid1}
   \caption{Water level development with the propotional ($P$), integral ($I$) and derivative ($D$) term.}
   \label{fig:pid1}
 \end{figure}
 With a constant target level, there is no qualitative difference to the previous iteration, except for
 small oscillations that are likely due to the delay between changes in the derivative of the measured level
 and the effect of the Arduino's output. The derivative term may be helpful to reach equilibrium more quickly
-when the target level is changed, however this was not thoroughly investigated here.
+when the target level is changed, though this was not thoroughly investigated here.
 
 
 
