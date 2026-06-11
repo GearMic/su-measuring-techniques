@@ -10,6 +10,10 @@
 
 \usepackage{graphicx}
 \graphicspath{{./figure}}
+
+\usepackage{caption}
+\captionsetup{format=plain}
+
 \usepackage{trimclip}
 % \usepackage{xspace}
 \usepackage{csquotes}
@@ -89,9 +93,9 @@ The signal generator is set to TTL mode which enables reliable generation of hig
 In this case a frequency of \SI{600}{\kHz} is used.
 
 
-\subsection{Effect of different terminations}\label{Setup}
+\subsection{Effect of Different Terminations}\label{Setup}
 First we connect the function generator to the oscilloscope using a coaxial BNC cable with a bifurcation (T-piece)
-at the end. The oscilloscope is connect to one output of the T-piece and the other output is left open.
+at the end. The oscilloscope is connected to one output of the T-piece and the other output is left open.
 Looking at the start of a square pulse, we see the voltage level quickly rise to about \SI{2}{\V},
 see \figref{fig:short-coax-t-open}.
 \begin{figure}
@@ -125,16 +129,17 @@ On the oscilloscope we only see the incoming signal so the amplitude is half of 
 
 Next, we leave the end of the second coaxial cable open. The resulting waveform can be seen in
 \figref{fig:short-coax-t-coax-open}. We see that first the signal rises to a stable level and 
-about \SI{12}{\ns} later it rises to double the previous level. This is because first we measure
-only the half the original signal that travels down the end of the T-piece connected to the oscilloscope.
+about \SI{12}{\ns} later it rises again to a higher level. This is because first we measure
+only the original signal that travels down the end of the T-piece connected to the oscilloscope.
 After the original signal travels down the second transmission line,
 it is reflected positively at the end ($r=1$) and travels back until it reaches the T-piece again,
 adding to the measured signal. Because the coaxial cable has a delay of \SI{6}{\ns}, this takes
-$2*\SI{6}{\ns} = \SI{12}{\ns}$. In the picture, we additionally see effects of the oscilloscope'same
+$2\cdot\SI{6}{\ns} = \SI{12}{\ns}$. In the picture, we additionally see effects of the oscilloscope's
 termination when measuring the signal: It is set to \SI{1}{\Mohm} which deforms the signal
 and enlarges it, the latter happening because the resistance of the oscilloscope essentially acts
 as a voltage divider, where \SI{1}{\Mohm} makes up almost the full total resistance whereas
-\SI{50}{\ohm} is only half of the total resistance. In all other pictures, the oscilloscope's
+the usual termination of \SI{50}{\ohm} is only half of the total resistance.
+In all other pictures, the oscilloscope's
 termination is set to \SI{50}{\ohm} to match the characteristic impedance of the transmission line.
 \begin{figure}
   \centering
@@ -159,12 +164,84 @@ a non-negligible resistance, perhaps due to a bad connection of the shorting wir
 
 
 
-\subsection{Coaxial vs Twisted Pair Cable}
+\subsection{Determining Characteristic Impedances}
+In the second part of the experiment, we investigate two transmission lines of
+unknown characteristic impedance. The goal is to find out their characteristic impedances by
+changing the termination resistance until there is no reflection. In order to do this,
+we connect the end of the respective cable to a variable resistor by means of a breadboard.
+The oscilloscope is also connected to the breadboard,
+replicating the setup with the T-piece that we had previously.
+
+First, we use a long coaxial cable. 
+With the variable resistor set to \SI{0}{\ohm} (i.e. a short circuit),
+the signal looks like \figref{fig:long-coax-short}.
+Again, the signal rises to a stable level before falling back down later on due to the negative reflection
+reaching the oscilloscope. We can see the much longer delay of about \SI{500}{\ns}.
+The delay is so long that the reflection is still present for a significant amount of time after the original
+signal goes away, making the voltage drop below $0$.
+The shape of the reflection is much softer than for the corter coaxial cable used previously.
+This is possibly because losses are not negligible anymore due to the length of the cable,
+so the characteristic impedance is now frequency dependent. Another effect may be the breadboard which
+uses wires that are not shielded like the coaxial cable.
+\begin{figure}
+  \centering
+  \begin{minipage}{.49\textwidth}
+    \includegraphics[width=\textwidth]{long-coax-short}
+    \caption{Square pulse with a coaxial cable terminated with a variable resistor at \SI{0}{\ohm}.}
+    \label{fig:long-coax-short}
+  \end{minipage}\hfill%
+  \begin{minipage}{.49\textwidth}
+    \includegraphics[width=\textwidth]{long-coax-termination}
+    \caption{Square pulse with a coaxial cable terminated with a variable resistor at $\sim \SI{45}{\ohm}$.}
+    \label{fig:long-coax-termination}
+  \end{minipage}
+\end{figure}
+
+We vary the resistor until the reflection disappears, see \figref{fig:long-coax-termination}.
+This happens at about \SI{45}{\ohm} meaning that the characteristic impedance of the cable
+roughly has this value. Even with the termination resistance, we still see artifacts which
+are again likely due to insufficient shielding of the wires on the breadboard.
+
+
+% With the end open, the signal looks like \figref{fig:long-coax-open}.
+% Again, the signal rises to a stable level before rising again later on due to the positive reflection
+% reaching the oscilloscope. We can see the much longer delay of about \SI{500}{\ns}.
+% The delay is so long that the reflection is still present for a significant amount of time after the original
+% signal has gone to $0$ again. The rise of the reflection is much softer than for the corter coaxial cable used
+% previously. This is possibly because losses are not negligible anymore due to the length of the cable,
+% so the characteristic impedance is now frequency dependent. Another effect may be the breadboard which
+% uses wires that are not shielded as opposed to the coaxial cable.
+
+Next, we use a twisted-pair cable (Ethernet cable). \figref{fig:long-twistedpair-open}
+shows the signal when using a large termination resistance of \SI{20}{\kohm}, having a similar effect to
+an open-ended cable. We can again see the positive reflection.
+\begin{figure}
+  \centering
+  \begin{minipage}{.49\textwidth}
+    \includegraphics[width=\textwidth]{long-twistedpair-open}
+    \caption{Square pulse with a twisted-pair cable terminated with a variable resistor at \SI{0}{\ohm}.}
+    \label{fig:long-twistedpair-open}
+  \end{minipage}\hfill%
+  \begin{minipage}{.49\textwidth}
+    \includegraphics[width=\textwidth]{long-twistedpair-termination}
+    \caption{Square pulse with a twisted-pair cable terminated with a variable resistor at $\sim \SI{100}{\ohm}$.}
+    \label{fig:long-twistedpair-termination}
+  \end{minipage}
+\end{figure}
+\figref{fig:long-twistedpair-termination} shows that the reflection disappears with a termination resistance
+of \SI{100}{\ohm}, so this is the characteristic impedance of the cable.
 
 
 
-\clearpage
 \section{Conclusion}
+This experiment examined the effect of transmission lines and their termination on high-frequency signals.
+First, different termination resistances were used and we could see that high resistances lead to positive
+reflections whereas low resistances lead to negative ones. This also showed the delaying effect of the
+cable used. When terminating a transmission line with its own characteristic impedance,
+there is no reflection. This fact was also used to find the characteristic impedance of two different
+cables: The characteristic impedance of the coaxial cable was found to be $\sim \SI{45}{\ohm}$ whereas
+the impedance of the twisted-pair cable was \SI{100}{\ohm}.
+
 
 
 
