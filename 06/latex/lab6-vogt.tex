@@ -60,19 +60,106 @@ will be investigated. One focus is to gain an understanding of termination and r
 \section{Theory}
 A transmission line can be viewed as a series of many infinitesimal LRC circuits.
 These combine to a total resistance $R$, inductance $L$, capacitance $C$ and transconductance $G$.
-The transmission line's impedance, i.\,e. the frequency-dependent ratio of voltage to current,
-is then
+The transmission line's characteristic impedance, i.\,e. the frequency-dependent ratio of voltage to current,
+is then \cite{manual-theory}
 \begin{equation*}
-  Z(\omega) = \sqrt\frac{j\omega L+R}{j\omega C+G}
+  Z_0(\omega) = \sqrt\frac{j\omega L+R}{j\omega C+G}.
 \end{equation*}
+In the lossless case, $R$ and $G$ are $0$ and the characteristic impedance is independent of frequency.
+This is assumed to be approximately true here.
+
+If there is a discontinuity in the impedance at the end of a transmission line, reflections occur \cite{manual-theory}.
+The reflection coefficient is the ratio of the refelcted voltage $V_r$ to the incoming voltage $V_0$
+and can be calculated as \cite{manual-theory}
+\begin{equation}
+  r = \frac{V_r}{V_0} = \frac{Z-Z_0}{Z+Z_0} \label{eq:reflection-coefficient}
+\end{equation}
+where $Z$ is the impedance at the end of the transmission line, also called the termination impedance.
+Putting an impedance at the end of a transmission line is called
+parallel termination, because the impedance is connected in parallel to the capacitors and transconductances
+of the transmission line.
 
 
 
-\section{Setup}\label{Setup}
+\section{The Experiment}
+We produce a high-frequency square wave using a signal generator and send this signal through transmission lines
+with various kinds of terminations, then view the result on an oscilloscope.
+
+The signal generator is set to TTL mode which enables reliable generation of higher frequencies.
+In this case a frequency of \SI{600}{\kHz} is used.
+
+
+\subsection{Effect of different terminations}\label{Setup}
+First we connect the function generator to the oscilloscope using a coaxial BNC cable with a bifurcation (T-piece)
+at the end. The oscilloscope is connect to one output of the T-piece and the other output is left open.
+Looking at the start of a square pulse, we see the voltage level quickly rise to about \SI{2}{\V},
+see \figref{fig:short-coax-t-open}.
+\begin{figure}
+  \centering
+  \begin{minipage}{.49\textwidth}
+    \includegraphics[width=\textwidth]{short-coax-t-open}
+    \caption{Start of a square pulse with an open T-piece.}
+    \label{fig:short-coax-t-open}
+  \end{minipage}\hfill%
+  \begin{minipage}{.49\textwidth}
+    \includegraphics[width=\textwidth]{short-coax-t-coax-50}
+    \caption{Start of a square pulse with a coaxial cable terminated with $Z=\SI{50}{\ohm}$ connected to a T-piece.}
+    \label{fig:short-coax-t-coax-50}
+  \end{minipage}
+\end{figure}
+
+% use a short coaxial BNC cable with a characteristic impedance of \SI{50}{\ohm}.
+% The oscilloscope is connected to one output of the T-piece and a second coaxial cable is connected to
+% the other output. When leaving the end of the cable open, the start of a square pulse looks like \figref{fig:}
+
+Now we connect a second coaxial cable to the previously open output of the T-piece and terminate the cable
+with a \SI{50}{\ohm} resistor.
+The square wave now reaches only about half the amplitude of before, see \figref{fig:short-coax-t-coax-50}.
+This can be explained as follows: With the open T-piece, the termination resistance is infinite and the
+reflection coefficient is $1$ according to \eqref{eq:reflection-coefficient}. Since the two outputs of the
+T-piece are close together, the reflection reaches the oscilloscope almost at the same time as the original
+signal and the two voltages add to twice the amplitude of the original signal. On the other hand,
+when we connect the second coaxial cable and leave terminate it with its characteristic impedance ($Z=Z_0=\SI{50}{\ohm}$)
+the signal splits at the T-piece and the part that travels down the coaxial cable is not reflected (because $r=0$).
+On the oscilloscope we only see the incoming signal so the amplitude is half of what we saw with the reflection.
+
+Next, we leave the end of the second coaxial cable open. The resulting waveform can be seen in
+\figref{fig:short-coax-t-coax-open}. We see that first the signal rises to a stable level and 
+about \SI{12}{\ns} later it rises to double the previous level. This is because first we measure
+only the half the original signal that travels down the end of the T-piece connected to the oscilloscope.
+After the original signal travels down the second transmission line,
+it is reflected positively at the end ($r=1$) and travels back until it reaches the T-piece again,
+adding to the measured signal. Because the coaxial cable has a delay of \SI{6}{\ns}, this takes
+$2*\SI{6}{\ns} = \SI{12}{\ns}$. In the picture, we additionally see effects of the oscilloscope'same
+termination when measuring the signal: It is set to \SI{1}{\Mohm} which deforms the signal
+and enlarges it, the latter happening because the resistance of the oscilloscope essentially acts
+as a voltage divider, where \SI{1}{\Mohm} makes up almost the full total resistance whereas
+\SI{50}{\ohm} is only half of the total resistance. In all other pictures, the oscilloscope's
+termination is set to \SI{50}{\ohm} to match the characteristic impedance of the transmission line.
+\begin{figure}
+  \centering
+  \begin{minipage}{.49\textwidth}
+    \includegraphics[width=\textwidth]{short-coax-t-coax-open}
+    \caption{Start of a square pulse with an open coaxial cable connected to a T-piece.}
+    \label{fig:short-coax-t-coax-open}
+  \end{minipage}\hfill%
+  \begin{minipage}{.49\textwidth}
+    \includegraphics[width=\textwidth]{short-coax-t-coax-short}
+    \caption{Start of a square pulse with a shorted coaxial cable connected to a T-piece.}
+    \label{fig:short-coax-t-coax-short}
+  \end{minipage}
+\end{figure}
+
+When shorting the end of the second coaxial cable instead of leaving it open, the signal looks like
+\figref{fig:short-coax-t-coax-short}. The effect is the same as before but the resistance is now
+$Z \sim \SI{0}{\Ohm}$ so the reflection coefficient is $\sim -1$,
+so after \SI{12}{\ns} the voltage level drops down instead of rising.
+It does not fully drop to $0$, suggesting that the piece used to short the end actually has
+a non-negligible resistance, perhaps due to a bad connection of the shorting wire.
 
 
 
-\section{Modulation Experiment}
+\subsection{Coaxial vs Twisted Pair Cable}
 
 
 
