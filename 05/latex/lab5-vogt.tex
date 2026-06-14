@@ -1,0 +1,101 @@
+\documentclass[a4paper]{scrartcl}
+% \usepackage{tgheros}
+% \usepackage[T1]{fontenc}
+\usepackage{fontspec}
+\setsansfont{TeX Gyre Heros}[Ligatures=TeX]
+\usepackage[all]{nowidow}
+
+\usepackage[sorting=none]{biblatex}
+\addbibresource{references.bib}
+
+\usepackage{graphicx}
+\graphicspath{{./figure}}
+
+\usepackage{caption}
+\captionsetup{format=plain}
+
+\usepackage{trimclip}
+% \usepackage{xspace}
+\usepackage{csquotes}
+\usepackage{hyperref}
+\usepackage{todonotes} % [disable]
+\usepackage{amsmath}
+\usepackage{siunitx}
+% \newfontfamily{\lmr}{Latin Modern Roman}
+% \sisetup{text-font-command=\lmr}
+% \sisetup{output-prefix={\ensuremath{\mu}}}
+\usepackage{amssymb}
+
+\newcommand{\figref}[1]{Fig.\,\ref{#1}}
+
+
+\begin{document}
+
+% \begin{titlepage}
+\begin{center}
+\vspace*{1cm}
+
+\LARGE
+  \textbf{Digital Filters}
+
+\vspace{.2cm}
+
+\normalsize
+  Physical Measuring Techniques FK7063
+
+\vspace{.5cm}
+{Michael Vogt}
+
+June 2026
+\end{center}
+
+\vspace{1cm}
+
+
+
+\section*{Introduction}
+In this computational lab, we construct several digital filters using Matlab
+and compare them to each other. We also analyze data from an EKG signal
+and determine ways to remove noise from it.
+
+
+% \end{titlepage}
+
+
+
+\section{Tasks}
+\subsection{Constructing a Second Order Stop-Band Filter}
+We define the frequency response of a stop-band filter whose gain is $0$ at $f = f_0 = \SI{50}{\Hz}$
+with a bandwidth of $b = \SI{4}{\Hz}$ at \SI{-3}{\dB} (corresponding to an attenuation of $1/\sqrt(2)$).
+The sampling rate is $F_s = \SI{1000}{\Hz}$.
+
+In the space of the z-transform, the frequency $f_0$ corresponds to $\exp(i\Omega_0)$ with
+$\Omega_0 = 2\pi \cdot f_0/F_s$. To get the desired attenuation, we place a zero
+at this point, i.\,e. we add a factor $(1- \exp(i\Omega_0))$ to the denominator.
+Since real signals always contain negative frequencies in the same amount as corresponding positive frequencies,
+we also need to attenuate \SI{-50}{\Hz} (corresponding to $-\Omega_0$) in the same way,
+so we add a factor $(1 - \exp(-i\Omega 0))$.
+
+Now we need to add the property that the filter's maximum gain is $1$ and that it has the desired bandwidth.
+This is achieved by adding a pole (i.e. a factor in the denominator)
+that is not on the unit circle but still close to the zero that we added.
+It can be parametrized as $r \exp(i\Omega 0)$ (with $r$ real). 
+For values of z that are far away, the distance to the pole and the zero will be roughly the same,
+so modulus of the numerator and denominator are equal, leading to a gain of $1$.
+When z approaches the pole and the zero, there comes a point when it is separated from the
+zero by a distance $d \approx (1-r)$ and from the pole by a distance $\approx \sqrt{d+(1-r)} \approx \sqrt{2}(1-r)$.
+the ratio of the numerator and denominator is then $1/\sqrt(2)$
+% the bandwidth therefore corresponds to a distance of 2d around the unit circle, and d is related to r by d=1-r,
+% where r is the distance of the pole from the origin. 
+
+
+
+\section{Conclusion}
+
+
+
+
+\vfill
+\printbibliography
+
+\end{document}
