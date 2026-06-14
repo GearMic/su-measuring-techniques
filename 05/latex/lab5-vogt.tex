@@ -70,7 +70,10 @@ with a bandwidth of $b = \SI{4}{\Hz}$ at \SI{-3}{\dB} (corresponding to an atten
 The sampling rate is $F_s = \SI{1000}{\Hz}$.
 
 In the space of the z-transform, the frequency $f_0$ corresponds to $\exp(i\Omega_0)$ with
-$\Omega_0 = 2\pi \cdot f_0/F_s$. To get the desired attenuation, we place a zero
+\begin{equation*}
+  \Omega_0 = 2\pi \frac{f_0}{F_s} = \frac{\pi}{10}
+\end{equation*}
+To get the desired attenuation, we place a zero
 at this point, i.\,e. we add a factor $(1- \exp(i\Omega_0))$ to the denominator.
 Since real signals always contain negative frequencies in the same amount as corresponding positive frequencies,
 we also need to attenuate \SI{-50}{\Hz} (corresponding to $-\Omega_0$) in the same way,
@@ -84,9 +87,43 @@ For values of z that are far away, the distance to the pole and the zero will be
 so modulus of the numerator and denominator are equal, leading to a gain of $1$.
 When z approaches the pole and the zero, there comes a point when it is separated from the
 zero by a distance $d \approx (1-r)$ and from the pole by a distance $\approx \sqrt{d+(1-r)} \approx \sqrt{2}(1-r)$.
-the ratio of the numerator and denominator is then $1/\sqrt(2)$
+the ratio of the numerator and denominator is then $1/\sqrt(2)$, so the arc around the unit circle
+where the gain is lower than \SI{-3}{\dB} has a length of $2d \approx 2(1-r)$.
+The bandwidth of the filter thus depends on the distance $r$ of the pole to the origin.
+We require the arc $2d$ to correspond to the bandwidth $b = \SI{4}{\Hz}$:
+\begin{align*}
+  &2(1-r) = 2d \stackrel{!}{=} 2\pi \frac{b}{F_s}\\
+  \implies &r = 1-\frac{b}{F_s}\pi = 1 - \frac{\pi}{250} = 0.98743
+\end{align*}
 % the bandwidth therefore corresponds to a distance of 2d around the unit circle, and d is related to r by d=1-r,
 % where r is the distance of the pole from the origin. 
+
+Again, we at two poles for positive and negative frequencies. With both zeros and poles,
+the filter transfer function becomes
+\begin{equation*}
+  H(z) = \frac{(1-\exp(i\Omega_0)) (1-\exp(-i\Omega_0))}%
+              {(1-r\exp(i\Omega_0)) (1-r\exp(-i\Omega_0))}
+\end{equation*}
+Multiplying out the brackets and then diving through by $z^2$, we get $H(z)$
+as a ratio of polynomials in $z^{-1}$:
+\begin{align*}
+  H(z) = \frac{B(z)}{A(z)} &= \frac{1 - 2\cos(\Omega_0) \cdot z^{-1} + z^{-2}}%
+              {1 - 2r\cos(\Omega_0) \cdot z^{-1} + r^2 \cdot z^{-2}} \\
+       &= \frac{1 - 1.9021 z^{-1} + z^{-2}}%
+              {1 - 1.8782 z^{-1} + 0.9750 z^{-2}}
+\end{align*}
+
+This is the form used by the Matlab function \texttt{freqz(b, a, N)} to plot
+the transfer function. $b$ and $a$ specify the coefficients in $B(z)$ and $A(z)$
+so \texttt{b = [1 -1.9021 1]} and \texttt{a = [1 -1.8782 0.9750]}.
+This gives the plot shown in \figref{fig:stopband1-freqz}
+\begin{figure}
+  \centering
+  \includegraphics[width=.7\textwidth]{stopband1-freqz}
+  \caption{}
+  \label{fig:stopband1-freqz}
+\end{figure}
+
 
 
 
