@@ -4,18 +4,17 @@
 \usepackage{fontspec}
 \setsansfont{TeX Gyre Heros}[Ligatures=TeX]
 \usepackage[all]{nowidow}
-
 \usepackage[sorting=none]{biblatex}
 \addbibresource{references.bib}
 
 \usepackage{graphicx}
 \graphicspath{{./figure}}
-
 \usepackage{caption}
 \captionsetup{format=plain}
-
+\usepackage{listings}
 \usepackage{trimclip}
 % \usepackage{xspace}
+
 \usepackage{csquotes}
 \usepackage{hyperref}
 \usepackage{todonotes} % [disable]
@@ -119,10 +118,92 @@ so \texttt{b = [1 -1.9021 1]} and \texttt{a = [1 -1.8782 0.9750]}.
 This gives the plot shown in \figref{fig:stopband1-freqz}
 \begin{figure}
   \centering
-  \includegraphics[width=.7\textwidth]{stopband1-freqz}
-  \caption{}
+  \includegraphics[width=.9\textwidth]{stopband1-freqz}
+  \caption{
+    Plot of the transfer function of the second-order stop-band filter,
+    created using the Matlab function \texttt{freqz}. The frequency
+    range was chosen to zoom in on the relevant features.
+    We chose $1000$ samples for better visibility.
+  }
   \label{fig:stopband1-freqz}
 \end{figure}
+
+The code is shown in \figref{code:stopband1-code}
+\begin{figure}[h!]
+% \begin{lstlisting}[language=Matlab]
+% \begin{lstlisting}[basicstyle=\ttfamily,language=Matlab]
+\begin{lstlisting}[basicstyle=\ttfamily\footnotesize,language=Matlab]
+  % input parameters
+  Fs = 1000;
+  f0 = 50;
+  b = 4;
+
+  % calculate omega0 and r
+  omega0 = f0/Fs * 2*pi;
+  r = 1-b/Fs*pi;
+
+  % calculate polynomial coefficients
+  b = [1 -2*cos(omega0) 1];
+  a = [1 -2*r*cos(omega0) r^2];
+
+  % plot using freqz
+  freqz(b, a, 256);
+  xlim([0 0.3]);
+  subplot(2, 1, 2); xlim([0 0.3]); 
+\end{lstlisting}
+\caption{
+  Matlab code to define and plot the second order stop-band filter.
+}
+\label{code:stopband1-code}
+\end{figure}
+
+
+
+\subsection{Second Order Butterworth-Type Stop-Band Filter}
+Next we construct a stop-band filter with the same characteristics as before,
+but created as a Butterworth filter using the Matlab function \texttt{butter(n, Wn, 'stop')}.
+\texttt{n} is the order where \texttt{n = 1} actually corresponds to a second order filter,
+and \texttt{Wn} is an array containing the break points normalized to the Nyqvist frequency.
+\texttt{'stop'} specifies that it is a stop-band filter.
+
+The transfer function plot can be seen in \figref{fig:stopband2-freqz} and
+the code in \figref{code:stopband2-code}.
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=.9\textwidth]{stopband2-freqz}
+  \caption{
+    Plot of the transfer function of the second-order butterworth-type stop-band filter.
+  }
+  \label{fig:stopband2-freqz}
+\end{figure}
+\begin{figure}[h]
+\begin{lstlisting}[basicstyle=\ttfamily\footnotesize,language=Matlab]
+  % input parameters
+  Fs = 1000;
+  f0 = 50;
+  b = 4;
+
+  % generate filter
+  n = 1;
+  Wn = [f0-b/2 f0+b/2] / (Fs/2);
+  [b, a] = butter(n, Wn, 'stop');
+
+  % plot transfer function
+  freqz(b, a, 1000)
+  xlim([0 0.3]);
+  subplot(2, 1, 2); xlim([0 0.3]); 
+\end{lstlisting}
+\caption{
+  Matlab code to generate and plot a second order butterworth-type stop-band filter.
+}
+\label{code:stopband2-code}
+\end{figure}
+
+The transfer functions of the previous filter and the butterworth-type filter have very similar
+characteristics since they were both defined to have the same stop band with the same bandwidth.
+Both filters have a jump in phase around the center of the stop-band. The manually defined filter
+drops more sharply (in theory reaching $-\infty\,\si{\dB}$) in the center of the stop-band because it
+has a zero there, whereas the butterworth-type filter has a finite minimum.
 
 
 
