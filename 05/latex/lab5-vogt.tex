@@ -264,6 +264,42 @@ which likely means that the chosen filter order was too low.
 
 
 \section{Sampling an EKG signal}
+Next, we study data from an EKG which has a sampling rate $F_s = \SI{300}{\Hz}$
+with $N=1024$ samples, see \figref{fig:ekg-plot-provided}.
+\begin{figure}
+  \centering
+  \includegraphics[width=.9\textwidth]{ekg-plot-provided}
+  \caption{EKG signal with noise \cite{manual}.}
+  \label{fig:ekg-plot-provided}
+\end{figure}
+
+The maximum frequency without aliasing is the Nyqvist frequency,
+i.\,e. half of the sampling rate:
+\begin{equation*}
+  F_\text{max} = \frac{F_s}{2} = \SI{150}{\Hz} 
+\end{equation*}
+The total sampling time is $T = N/F_s$ and the frequency resolution signal's Fourier transform
+would be $\Delta f = \frac{1}{T} = F_s/N \approx \SI{0.293}{\Hz}$.
+The frequency with the largest amplitude is clearly that of the recurring heartbeat signal.
+There are about $3$ beats between samples $0$ and $800$, so the frequency is
+\begin{equation*}
+  f_H = \frac{3}{800/F_s} = \SI{1.125}{\Hz}
+\end{equation*}
+
+The data we are actually provided is different from the provided plot in \figref{fig:ekg2-plot-orig}.
+We will analyze the data from \texttt{EKG\_02.wav} which contains $N=82893$ samples at a sampling rate
+$F_s = \SI{8000}{\Hz}$ so the data spans $T = N/F_s = \SI{10.36}{\s}$.
+It is plotted in \figref{fig:ekg-plot-orig}.
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=.9\textwidth]{ekg2-plot-orig}
+  \caption{Plot of the data from \texttt{EKG\_02.wav}.}
+  \label{fig:ekg2-plot-orig}
+\end{figure}
+
+To analyze the frequency content, we take the signal's fourier transform.
+The frequency resolution is $\Delta f = 1/T = \SI{0.0965}{\Hz}$
+
 
 
 
