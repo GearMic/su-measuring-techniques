@@ -11,6 +11,7 @@
 \graphicspath{{./figure}}
 \usepackage{caption}
 \captionsetup{format=plain}
+\usepackage{subcaption}
 \usepackage{listings}
 \usepackage{trimclip}
 % \usepackage{xspace}
@@ -205,6 +206,64 @@ Both filters have a jump in phase around the center of the stop-band. The manual
 drops more sharply (in theory reaching $-\infty\,\si{\dB}$) in the center of the stop-band because it
 has a zero there, whereas the butterworth-type filter has a finite minimum.
 
+
+
+\subsection{Other Filter Types}
+There are several more filter types supported by Matlab. Among them are
+\begin{itemize}
+  \item Chebyshev type I: \texttt{cheby1(n,Rp,Wn,'stop');} \\defined with pass-band ripple \texttt{Rp} in \si{\dB}.
+  \item Chebyshev type I:  \texttt{cheby2(n,Rs,Wn,'stop');} \\defined with stop-band attenuation \texttt{Rs} in \si\dB.
+  \item Elliptical:  \texttt{ellip(n,Rp,Rs,Wn,'stop');} \\defined with both \texttt{Rp} and \texttt{Rs}.
+\end{itemize}
+For each of these filters we replace the function \texttt{butter(\dots)} in \figref{code:stopband2-code}  
+with one of the above, choosing \texttt{Rp = 2} and \texttt{Rs = 20}.
+Also, we again choose \texttt{n = 1} which results in second-order polynomials.
+The transfer functions are shown in \figref{fig:stopband3-freqz}.
+\begin{figure}[h]
+  \centering
+  \begin{subfigure}{.9\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{stopband3ch1-freqz}
+    \subcaption{
+      Chebyshev type I filter.
+    }
+    \label{fig:stopband3ch1-freqz}
+  \end{subfigure}
+  \begin{subfigure}{.9\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{stopband3ch2-freqz}
+    \subcaption{
+      Chebyshev type II filter.
+    }
+    \label{fig:stopband3ch2-freqz}
+  \end{subfigure}
+  \begin{subfigure}{.9\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{stopband3ellip-freqz}
+    \subcaption{
+      Elliptical filter.
+    }
+    \label{fig:stopband3ellip-freqz}
+  \end{subfigure}
+  \caption{Transfer functions of three different kinds of stop-band filters.
+    The frequency ranges of the plots are chosen close to the stop-band
+    to emphasize differences in the frequency response.}
+  \label{fig:stopband3-freqz}
+\end{figure}
+
+The Chebyshev type I and elliptical filter are identical (this can be seen by looking at the plots and by inspecting
+the polynomial coefficients). When changing the \texttt{Rs} value for the elliptical filter, we see that
+the coefficients always stay the same, so at this order and with \texttt{Rp = 2} the stop-band attenuation
+actually has no impact on the elliptical filter and it is identical to a Chebyshev type I filter.
+
+The Chebyshev type II filter reaches a much lower gain ($\sim\SI{-50}{\dB}$) than the other two but
+also has a much slower rise away from the stop band. In fact, it does not adhere to the provided breaking points
+which likely means that the chosen filter order was too low.
+  % \texttt{[b, a] = butter(n, Wn, 'stop');}
+
+
+
+\section{Sampling an EKG signal}
 
 
 
