@@ -64,7 +64,7 @@ and determine ways to remove noise from it.
 
 
 \section{Tasks}
-\subsection{Constructing a Second Order Stop-Band Filter}
+\subsection{Constructing a Second Order Stop-Band Filter} \label{stop-band-manual}
 We define the frequency response of a stop-band filter whose gain is $0$ at $f = f_0 = \SI{50}{\Hz}$
 with a bandwidth of $b = \SI{4}{\Hz}$ at \SI{-3}{\dB} (corresponding to an attenuation of $1/\sqrt(2)$).
 The sampling rate is $F_s = \SI{1000}{\Hz}$.
@@ -280,7 +280,7 @@ i.\,e. half of the sampling rate:
 \end{equation*}
 The total sampling time is $T = N/F_s$ and the frequency resolution signal's Fourier transform
 would be $\Delta f = \frac{1}{T} = F_s/N \approx \SI{0.293}{\Hz}$.
-The frequency with the largest amplitude is clearly that of the recurring heartbeat signal.
+The frequency with the largest amplitude is likely that of the recurring heartbeat signal.
 There are about $3$ beats between samples $0$ and $800$, so the frequency is
 \begin{equation*}
   f_H = \frac{3}{800/F_s} = \SI{1.125}{\Hz}
@@ -298,12 +298,43 @@ It is plotted in \figref{fig:ekg-plot-orig}.
 \end{figure}
 
 To analyze the frequency content, we take the signal's fourier transform.
-The frequency resolution is $\Delta f = 1/T = \SI{0.0965}{\Hz}$
+The frequency resolution is $\Delta f = 1/T = \SI{0.0965}{\Hz}$ and the Nyqvist frequency is $4000\Hz$.
+The fourier transform is plotted in \figref{fig:ekg2-fft}. 
+\begin{figure}[h]
+  \centering
+  \includegraphics[options]{ekg2-fft}
+  \caption{Fourier transform of the data from \texttt{EKG\_02.wav}.}
+  \label{fig:ekg2-fft}
+\end{figure}
 
+We can see that the dominant frequency is
+actually not that of the heartbeat, but the noise at \SI{50}{\Hz}. We can filter out the noise by
+applying the stop band filter from Sec.\,\ref{stop-band-manual}.
+this is done by doing \texttt{x = filter(b, a, x)} where \texttt{b} and \texttt{a} are the arrays
+given in Sec.\,\ref{stop-band-manual}. The filtered signal is shown in \figref{fig:ekg2-plot-filtered}.
+There is now much more structure visible because the interfering \SI{50}{\Hz} oscillation is not
+there anymore. The most important characteristic of the signal is the sharp drop and then
+peak in voltage caused by the heartbeat. This is followed about \SI{0.3}{\s} later by a second,
+much smaller peak.
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=.9\textwidth]{ekg2-plot-filtered}
+  \caption{Plot of the data from \texttt{EKG\_02.wav} with a \SI{50}{\Hz} spot-band filter applied.}
+  \label{fig:ekg2-plot-filtered}
+\end{figure}
 
 
 
 \section{Conclusion}
+In this computational lab, multiple digital filters were constructed using Matlab.
+The task was to construct stop-band filters with the same stop band characteristics
+using different methods. We constructed a filter by placing specific poles and zeros.
+This filter had the best characteristics in terms of attenuation of the stop frequency.
+Other filter types used were Chebyshev type I and II and an elliptical filter.
+
+Additionally, an EKG signal was analyzed by looking at its Fourier transform. We could
+see a strong contribution at \SI{50}{\Hz} likely caused by the mains voltage.
+After filtering this out, we identified two distinct peaks for each heartbeat.
 
 
 
