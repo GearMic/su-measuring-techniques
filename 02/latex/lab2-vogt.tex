@@ -47,6 +47,7 @@ May 2026
 
 \section*{Introduction}
 Noise can occur in operational amplifiers (op amps; OPA) due to various effects of their internal function.
+Besides this, op amps usually appear in circuits together with resistors which also add noise.
 This noise is generally dependent on the frequency of operation.
 The amount of noise present at a specific frequency is quantified by the \textit{spot noise density}
 and the goal of our experiment is to measure this quantity for a Burr-Brown OPA37 op amp.
@@ -55,8 +56,42 @@ and the goal of our experiment is to measure this quantity for a Burr-Brown OPA3
 
 
 
+\section{Theory}
+A very general class of operational amplifier circuits can be simplified to the form of the circuit
+shown in \figref{fig:noise-model}.
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=.6\textwidth]{noise-model}
+  \caption{Circuit used for operational amplifier noise analysis \cite{noise-analysis}.}
+  \label{fig:noise-model}
+\end{figure}
+
+Besides the op amp, the model contains three resistors: The source resistor $R_S$, the
+feedback resistor $R_F$ and the gain-setting resistor $R_G$. Additionally to these components,
+the circuit contains (generally frequency-dependent) voltage sources and current sources to model the noise.
+Whether a resistor's noise is modeled by a (parallel) current source or (serial) voltage source is simply a matter of
+convenience for calculations \cite{noise-analysis}.
+For the operational amplifier, there are both current and voltage noise sources. These are \cite{noise-analysis}
+\begin{itemize}
+  \item $E_\text{NI}$: Voltage noise at the op amp's non-inverting input.
+    This typically includes $1/f$ noise effects.
+  \item $I_\text{BN}$: Current noise at the op amp's non-inverting input. For a bipolar op amp,
+    this also has a $1/f$ rise, whereas for FET op amps the noise current is constant at low frequencies but rises at high frequencies.
+  \item $I_\text{BI}$: The same as $I_\text{BN}$ for the the inverting input. 
+\end{itemize}
+Thermal noise in the resistors is modeled by the following sources:
+\begin{itemize}
+  \item $E_\text{RS} = \sqrt{4kTR_S}$: Noise voltage of the source resistor.
+  \item $E_\text{RS} = \sqrt{4kTR_F}$: Noise voltage of the feedback resistor.
+  \item $E_\text{RS} = \sqrt{\frac{4kT}{R_G}}$: Noise current of the source resistor.
+\end{itemize}
+
+
+
 \section{Setup}\label{setup}
-The op amp is set up in a non-inverting amplifier circuit, see \figref{fig:opa-circuit}.
+In this experiment, the op amp is set up in a non-inverting amplifier circuit, see \figref{fig:opa-circuit}.
+This circuit only contains a gain-setting resistor $R_g$ and a feedback resistor $R_f$
+but no source resistor, so $R_s = 0$.
 The expected gain is $G=\frac{U_\text{in}}{U_\text{out}} = 1+\frac{R_f}{R_g}=1001$.
 \begin{figure}[h]
   \centering
